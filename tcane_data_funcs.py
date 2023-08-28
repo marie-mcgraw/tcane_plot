@@ -14,7 +14,7 @@ pd.options.mode.chained_assignment = None
 # This script reads in the TCANE climatology files and saves the output to a `Pandas` DataFrame. 
 # 
 # <b>Inputs</b>:
-# * `file`: name of file to read into dataframe [str]
+# * `file`: name of file to read into Pandas dataframe [str]
 # 
 # <b>Outputs</b>: 
 # * `df_clim`: contents of `file` converted to `Pandas` DataFrame [DataFrame]
