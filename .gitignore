@@ -1,0 +1,9 @@
+*.png
+*.out
+*.log
+**/*.log
+log_files/*.log
+*.pdf
+**/*.ipynb_checkpoints/
+*.pyc
+*.pkl
