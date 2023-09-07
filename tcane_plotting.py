@@ -57,10 +57,14 @@ def get_cat_probs(ax,df,df_clim,df_in,ttype):
     colors = ('#284E60', '#E1A730', '#D95980', '#C3B1E1', '#351F27', '#A9C961')
     for i in range(0,5):
         # climo
-        sns.lineplot(data=df_clim.reset_index(),x=df_clim.index,y='PCT Cat{i}'.format(i=i+1),color=colors[i],
+        dfc_rs = df_clim.reset_index()
+        sns.lineplot(data=df_clim.reset_index(),x=df_clim.index.values,y=df_clim['PCT Cat{i}'.format(i=i+1)],color=colors[i],
                     label=('Climo' if i == 0 else None),alpha=0.55,linewidth=4,ax=ax,linestyle=':')
+        # sns.lineplot(x=dfc_rs.index.values,y=dfc_rs['PCT Cat{i}'.format(i=i+1)].values,colors=colors[i],
+                     #label=('Climo' if i == 0 else None),alpha=0.55,linewidth=4,ax=ax,linestyle=':')
         # actual
-        sns.lineplot(data=df.reset_index(),x=df.index,y='PCT Cat{i}'.format(i=i+1),color=colors[i],
+        df_rs = df.reset_index()
+        sns.lineplot(data=df.reset_index(),x=df.index.values,y=df['PCT Cat{i}'.format(i=i+1)],color=colors[i],
                  label=('{exdate}'.format(exdate=df_in.iloc[0]['NAME']) if i == 0 else None),ax=ax,linewidth=4)
     #
     ax.set_xticks(np.arange(0,df.index.max()+1,12))
