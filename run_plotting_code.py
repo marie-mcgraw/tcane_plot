@@ -31,6 +31,8 @@ import cartopy.crs as ccrs
 import mahalanobis
 import tcane_data_funcs
 
+import warnings
+warnings.simplefilter(action='error', category=FutureWarning)
 
 # Calls all of the TCANE plotting code.
 # 
@@ -192,7 +194,7 @@ def call_TCANE_plotting(date,in_dir,out_dir,clim_dir,bdeck_dir):
 
 
 #output_dir = '/mnt/ssd-data1/galina/tcane/data/test_output/'
-#climo_dir = '/mnt/ssd-data1/galina/tcane/data/climo/'
+climo_dir = '/mnt/ssd-data1/galina/tcane/data/climo/'
 #input_dir = '/mnt/ssd-data1/galina/tcane/data/test_input/'
 bdeck_dir = '/home/mcgraw/best_tracks/'
 
@@ -204,8 +206,11 @@ bdeck_dir = '/home/mcgraw/best_tracks/'
 
 # In[4]:
 
-
-call_TCANE_plotting(ex_date,input_dir,output_dir,climo_dir,bdeck_dir)
+if __name__=="__main__":
+    if len(sys.argv) == 4:
+        call_TCANE_plotting(str(sys.argv[1]),str(sys.argv[2]),str(sys.argv[3]),climo_dir,bdeck_dir)
+    elif len(sys.argv) == 6:
+        call_TCANE_plotting(str(sys.argv[1]),str(sys.argv[2]),str(sys.argv[3]),str(sys.argv[4]),str(sys.argv[5]))
 
 
 # In[ ]:
