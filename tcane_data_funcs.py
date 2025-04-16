@@ -84,7 +84,7 @@ def get_TCANE_distribution(df,ttype_sel,df_in):
     for ihr in dfx.index:
         if ihr not in dfi.index:
             continue
-        dist_tcane = [dfx.loc[ihr]['MU'] + dfi.loc[ihr]['VMAXN'], dfx.loc[ihr]['SIGMA'], dfx.loc[ihr]['GAMMA'], dfx.loc[ihr]['TAU']]
+        dist_tcane = [float(dfx.loc[ihr]['MU']) + float(dfi.loc[ihr]['VMAXN']), float(dfx.loc[ihr]['SIGMA']), float(dfx.loc[ihr]['GAMMA']), float(dfx.loc[ihr]['TAU'])]
         df_tcdist.loc[ihr]['DIST'] = dist_tcane
         df_tcdist.loc[ihr]['TTYPE'] = ttype_sel
     return df_tcdist
@@ -136,6 +136,7 @@ def make_SHASH(N,tcane_dist,ttype,V0):
 def calc_pctiles(Y,pctiles=[.01,.05,.1,.25,.5,.75,.9,.95,.99]):
     # Check to make sure percentiles are between 0 and 1; if not, divide by 100
     check_pct = True in (ip > 1 for ip in pctiles)
+    Y['Y'] = Y['Y'].astype(float)
     if check_pct:
         pctiles = np.divide(pctiles,100)
     # Calculate pctiles
@@ -163,7 +164,7 @@ def get_PDF_CDF(xmax,Y,ttype):
     Yind = Y.set_index(['FHOUR'])
     for ihr in Yind.index.unique():
         Y_i = Yind.xs(ihr)
-        count,bins_count = np.histogram(Y_i['Y'],bins=xbins)
+        count,bins_count = np.histogram(Y_i['Y'].astype(float),bins=xbins)
         pdf = count/np.sum(count)
         cdf = np.cumsum(pdf)
         #
@@ -202,15 +203,23 @@ def get_RI_info(df,x_in,ttype):
              4:113,
              5:137}
     ##
+    df = df[df['FHOUR']<=x_in['FHOUR'].max()]
+
     for i in RI_thresh.keys():
         RI_prob = pd.DataFrame(columns=['TTYPE','PCT RI','RI THRESH'],index=[i])
         #
         foo = df[df['FHOUR']==i]
-        thresh = x_in.set_index(['FHOUR']).xs(i)['VMAX0']+RI_thresh[i]
-        pct_RI = (1-foo.loc[thresh]['CDF'])*100
-        RI_prob['TTYPE'] = ttype
-        RI_prob['PCT RI'] = pct_RI
-        RI_prob['RI THRESH'] = thresh
+        x_in['VMAX0'] = x_in['VMAX0'].astype(float)
+        if i not in x_in['FHOUR'].values:
+            RI_prob['TTYPE'] = ttype
+            RI_prob['PCT RI'].loc[i] = np.nan
+            RI_prob['RI THRESH'].loc[i] = np.nan
+        else:
+            thresh = x_in.set_index(['FHOUR']).xs(i)['VMAX0']+RI_thresh[i]
+            pct_RI = (1-foo.loc[thresh]['CDF'])*100
+            RI_prob['TTYPE'].loc[i] = ttype
+            RI_prob['PCT RI'].loc[i] = pct_RI
+            RI_prob['RI THRESH'].loc[i] = thresh
         #
         if i == list(RI_thresh.keys())[0]:
             RI_all = RI_prob

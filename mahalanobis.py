@@ -28,6 +28,7 @@ References
 
 """
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as pe
 import numpy as np
 import palettable
 import cartopy as ct
@@ -96,6 +97,7 @@ def plot_cdf(
         is_fill=True,
         label=None,
         linetype='-',
+        linewt=2,
         ):
     """Plot the Mahalanobis cdf.
 
@@ -143,15 +145,19 @@ def plot_cdf(
         )
         if label:
             if is_fill:
+                plt.fill(x, y, color=colors[i], alpha=alpha, label='_Hidden', path_effects=[pe.Stroke(linewidth=int(linewt*1.5), foreground='k',alpha=0.3), pe.Normal()], transform=data_crs)
                 plt.fill(x, y, color=colors[i], alpha=alpha, label=label[i], transform=data_crs, )
             else:
-                plt.plot(x, y, color=colors[i], alpha=alpha,linestyle=linetype, label=label[i],transform=data_crs,)
+                plt.plot(x, y, color=colors[i], alpha=alpha,linestyle=linetype, linewidth=linewt, label='_Hidden', path_effects=[pe.Stroke(linewidth=int(linewt*1.5), foreground='g',alpha=0.2), pe.Normal()], transform=data_crs)
+                plt.plot(x, y, color=colors[i], alpha=alpha,linestyle=linetype, linewidth=linewt, label=label[i], transform=data_crs,)
         else:
             if is_fill:
+                plt.fill(x, y, color=colors[i], alpha=alpha, label=None, path_effects=[pe.Stroke(linewidth=int(linewt*1.5), foreground='g',alpha=0.2), pe.Normal()], transform=data_crs )
                 plt.fill(x, y, color=colors[i], alpha=alpha, label=None, transform=data_crs, )
             else:
-                plt.plot(x, y, color=colors[i], alpha=alpha, linestyle=linetype, label=None, transform=data_crs, )
-
+                plt.plot(x, y, color=colors[i], alpha=alpha, linestyle=linetype, linewidth=linewt, label=None, path_effects=[pe.Stroke(linewidth=int(linewt*1.5), foreground='k',alpha=0.3), pe.Normal()], transform=data_crs)
+                plt.plot(x, y, color=colors[i], alpha=alpha, linestyle=linetype, linewidth=linewt, label=None, transform=data_crs, )
+    return x,y
 
 def compute_cdf(mu_u, mu_v, sigma_u, sigma_v, rho, u, v):
     """Compute the Mahalanobis cdf for [u, v] using a bivariate normal

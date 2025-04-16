@@ -23,11 +23,11 @@ import scipy.stats as sps
 # * `b_deck_trim`: same as above, but trimmed to only identifying information and `VMAX` and `MSLP` [Dataframe]
 def get_bdecks(year,stormno,basin,bdeck_dir):
     # Create appropriate filename
-    if (basin == 'AL')|(basin == 'EP'):
+    if (basin.upper() == 'AL')|(basin.upper() == 'EP'):
         bas_dir = 'NHC'
     else:
         bas_dir = 'DOD'
-    bd_dir_full = bdeck_dir#+'{bas_dir}/'.format(bas_dir=bas_dir)
+    bd_dir_full = bdeck_dir+'{bas_dir}/'.format(bas_dir=bas_dir)
     fpath_full = bd_dir_full+'b{basin}{stormno}{yr}.dat'.format(basin=basin.lower(),stormno=stormno,yr=year)
     if not os.path.exists(fpath_full):
         b_deck_ALL = pd.DataFrame()
@@ -93,6 +93,11 @@ def get_bdecks(year,stormno,basin,bdeck_dir):
 # * `edeck_out`: Dataframe containing output of correspoding edeck file [str]
 def get_edeck_probs(edeck_dir,seldate,basin_abb,tech_sel=['RIOC','RIOD']):
     # Get regular lsdiag file
+    if (basin_abb.upper() == 'AL')|(basin_abb.upper() == 'EP'):
+        bas_dir = 'NHC'
+    else:
+        bas_dir = 'DOD'
+    edeck_dir = edeck_dir+'{bas_dir}/'.format(bas_dir=bas_dir)
     #fname = '{fdate}{BA}'.format(fdate=fdate,BA=basin_abb)
     # files = predict_test.get_all_lsdiag(fpath,fname)
     edeck_out = pd.DataFrame()

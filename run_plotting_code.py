@@ -54,6 +54,7 @@ def call_TCANE_plotting(date,in_dir,out_dir,clim_dir,bdeck_dir):
     log_file = open("log_files/{fdate}.log".format(fdate=date),"w")
     sys.stdout = log_file
     bas_ab = date[0:2].lower()
+    atcfid = date[0:8]
     #1. Get dataframes
     df_climo = tcane_data_funcs.climo_to_df(clim_dir+'tcane_climo_format_{ba}.dat'.format(ba=bas_ab))
     df_out = tcane_data_funcs.read_in_TCANE(out_dir+'{ex_date}_tcane_output.dat'.format(ex_date=date))
@@ -73,17 +74,17 @@ def call_TCANE_plotting(date,in_dir,out_dir,clim_dir,bdeck_dir):
     #
     c_Y_e,c_Y_l,c_pdf_e,c_pdf_l,c_pct_e,c_pct_l,c_RI_e,c_TC_e,c_RI_l,c_TC_l = tcane_plotting.make_all_plotting_data(df_in,df_climo,vmax,pvc)
     ##3. Make plots
-    target_savedir = 'Figures/{date}'.format(date=date)
+    target_savedir = 'Figures/{date}'.format(date=atcfid)
     if not os.path.isdir(target_savedir):
         os.mkdir(target_savedir)
     #
-    fig1,ax1 = plt.subplots(1,1,figsize=(12,7))
-    ax1 = tcane_plotting.make_boxplot(ax1,Y_e,Y_l,df_in,[1,99])
-    ax1.set_title('TCANE Forecasts, {name}, {ex_date}'.format(name=df_in.iloc[0]['NAME'],ex_date=date),fontsize=26)
-    fig1.savefig('{target_savedir}/boxplot_{name}_{exdate}.pdf'.format(target_savedir=target_savedir,name=df_in.iloc[0]['NAME'],exdate=date),format='pdf',bbox_inches='tight')
-    fig1.savefig('{target_savedir}/boxplot_{name}_{exdate}.png'.format(target_savedir=target_savedir,
-                                    name=df_in.iloc[0]['NAME'],exdate=date),format='png',dpi=400,bbox_inches='tight')
-    plt.close()
+    # fig1,ax1 = plt.subplots(1,1,figsize=(12,7))
+   # ax1 = tcane_plotting.make_boxplot(ax1,Y_e,Y_l,df_in,[1,99])
+    #ax1.set_title('TCANE Forecasts, {name}, {ex_date}'.format(name=df_in.iloc[0]['NAME'],ex_date=date),fontsize=26)
+   # fig1.savefig('{target_savedir}/boxplot_{name}_{exdate}.pdf'.format(target_savedir=target_savedir,name=df_in.iloc[0]['NAME'],exdate=date),format='pdf',bbox_inches='tight')
+    # fig1.savefig('{target_savedir}/boxplot_{name}_{exdate}.png'.format(target_savedir=target_savedir,
+    #                                name=df_in.iloc[0]['NAME'],exdate=date),format='png',dpi=400,bbox_inches='tight')
+    # plt.close()
     ###
     fig20,(ax20,ax20b) = plt.subplots(1,2,figsize=(15,6))
     ax20 = tcane_plotting.get_cat_probs(ax20,TC_e,c_TC_e,df_in,'erly')
@@ -145,8 +146,9 @@ def call_TCANE_plotting(date,in_dir,out_dir,clim_dir,bdeck_dir):
     ax4 = tcane_track_plotting.make_track_plt(ax4,track_sub,df_out,'erly')
     ax4b = fig4.add_subplot(1,2,2,projection=ct.crs.PlateCarree(central_longitude=0.))
     ax4b = tcane_track_plotting.make_track_plt(ax4b,track_sub,df_out,'late')
+    fig4.tight_layout()
     fig4.suptitle('{name}, {date}'.format(name=track_sub['Name'].iloc[0],date=track_sub['DATE'].iloc[0],
-                                          fontsize=40),y=0.8)
+                                          fontsize=40),y=1.01)
     fig4.savefig('{target_savedir}/TRACK_{name}_{exdate}.pdf'.format(target_savedir=target_savedir,name=df_in.iloc[0]['NAME'],exdate=date),format='pdf',bbox_inches='tight')
     fig4.savefig('{target_savedir}/TRACK_{name}_{exdate}.png'.format(target_savedir=target_savedir,name=df_in.iloc[0]['NAME'],exdate=date),format='png',dpi=400,bbox_inches='tight')
     plt.close()
@@ -158,8 +160,9 @@ def call_TCANE_plotting(date,in_dir,out_dir,clim_dir,bdeck_dir):
     ax5 = tcane_track_plotting.make_track_plt_climo(ax5,track_sub,df_out,track_sub_clim,'erly',cmax=cmax)
     ax5b = fig5.add_subplot(1,2,2,projection=ct.crs.PlateCarree(central_longitude=0.))
     ax5b = tcane_track_plotting.make_track_plt_climo(ax5b,track_sub,df_out,track_sub_clim,'late',cmax=cmax)
+    fig5.tight_layout()
     fig5.suptitle('{name}, {date}'.format(name=track_sub['Name'].iloc[0],date=track_sub['DATE'].iloc[0],
-                                          fontsize=40),y=0.8)
+                                          fontsize=40),y=1.01)
     fig5.savefig('{target_savedir}/TRACK_climo_{cmax}_pctile_{name}_{exdate}.pdf'.format(cmax=np.round(cmax*100,0).astype(int),
             target_savedir=target_savedir,name=df_in.iloc[0]['NAME'],exdate=date),format='pdf',bbox_inches='tight')
     fig5.savefig('{target_savedir}/TRACK_climo_{cmax}_pctile_{name}_{exdate}.png'.format(cmax=np.round(cmax*100,0).astype(int),
@@ -172,8 +175,9 @@ def call_TCANE_plotting(date,in_dir,out_dir,clim_dir,bdeck_dir):
     ax5 = tcane_track_plotting.make_track_plt_climo(ax5,track_sub,df_out,track_sub_clim,'erly',cmax=cmax)
     ax5b = fig5.add_subplot(1,2,2,projection=ct.crs.PlateCarree(central_longitude=0.))
     ax5b = tcane_track_plotting.make_track_plt_climo(ax5b,track_sub,df_out,track_sub_clim,'late',cmax=cmax)
+    fig5.tight_layout()
     fig5.suptitle('{name}, {date}'.format(name=track_sub['Name'].iloc[0],date=track_sub['DATE'].iloc[0],
-                                          fontsize=40),y=0.8)
+                                          fontsize=40),y=1.01)
     fig5.savefig('{target_savedir}/TRACK_climo_{cmax}_pctile_{name}_{exdate}.pdf'.format(cmax=np.round(cmax*100,0).astype(int),
             target_savedir=target_savedir,name=df_in.iloc[0]['NAME'],exdate=date),format='pdf',bbox_inches='tight')
     fig5.savefig('{target_savedir}/TRACK_climo_{cmax}_pctile_{name}_{exdate}.png'.format(cmax=np.round(cmax*100,0).astype(int),
@@ -193,16 +197,18 @@ def call_TCANE_plotting(date,in_dir,out_dir,clim_dir,bdeck_dir):
 # In[3]:
 
 
-#output_dir = '/mnt/ssd-data1/galina/tcane/data/test_output/'
+# output_dir = '/mnt/ssd-data1/galina/tcane/data/test_output/'
+# output_dir = '/home/mcgraw/Outputs/tcane_output_files/'
 climo_dir = '/mnt/ssd-data1/galina/tcane/data/climo/'
 #input_dir = '/mnt/ssd-data1/galina/tcane/data/test_input/'
+# input_dir = '/home/mcgraw/Inputs/'
 bdeck_dir = '/home/mcgraw/best_tracks/'
 
 # ex_date = 'EP052022_071012'
 # ex_date = 'AL032023_062018'
 #ex_date = 'AL072022_091612'
 #
-
+ex_date = 'AL102023_082700'
 
 # In[4]:
 
